@@ -1,0 +1,227 @@
+checkBoxClosed
+checkSafetyLabel dio
+checkCommunicationCas cas
+checkCommunicationPS ps
+setPSStatus ps 0.0 0.0
+waitSomeTime 5
+
+setDebugStatus dio true
+moveLightGuide in
+setPSStatus ps 24.0 10.0
+waitSomeTime 7
+checkCommunicationHelios can
+checkIfInDebug can true
+readPSValues ps dataPSSby
+checkLimitsPS dataPSSby
+checkGeneralFunction can cas
+
+writeSNToEEPROM can
+readSNandLifeTime can dataHelios
+
+resetDailyCalib can
+waitSomeTime 2
+restart can 
+waitSomeTime 2
+generateVariables [red/green/blue] [1/2/3/4/5/6/7/8/9/10/11/12/13/14/15/16]
+loadVariablesData
+loadLimitValues
+getCalibCurVolDacFromHelios can
+//checkCalibCurVolDac
+//checkIfLightGuideIsMovedIn
+
+doDACCalib can
+waitSomeTime 2
+restart can
+waitSomeTime 2
+
+doIntegrationTimeEstimate [red/green/blue]
+{
+    setHeliosColorIntensity can loop1 80
+    waitSomeTime 1
+    readCASForEstimate cas loop1 time
+    setHeliosColorIntensity can loop1 0
+    calcIntegrationTimes loop1 time
+}1
+doOneMeasurement [red/green/blue] [1/2/3/4/5/6/7/8/9/10/11/12/13/14/15/16]
+{
+    setHeliosColorIntensityRef can loop1 loop2
+    waitSomeTime 0.2
+    readHeliosRef can loop1 loop2  
+    readCASRef cas loop1 loop2
+    calcAdditionalValuesRef loop1 loop2
+    checkLimitsRef loop1 loop2
+}2
+
+setHeliosColorIntensity can blue 0
+saveMeasurementToFile dataHelios
+
+doCalibCalc [red/green/blue]
+{
+    calibPhiMax loop1
+    calibCx loop1
+    calibCy loop1
+    calibPhi loop1
+    calibPhiADC loop1
+    calibIByDac loop1
+    calibUByI loop1
+    calibTempChip loop1
+    checkCalibLimitsRef loop1
+}1
+
+writeCalibValuesToEEPROM can
+
+SetDebugStatus dio false
+waitSomeTime 1
+restart can
+waitSomeTime 3
+checkIfInDebug can false
+calibSuperR9 cas can
+checkCalibSuperR9LimitsRef
+SetDebugStatus dio true
+restart can
+waitSomeTime 3
+checkIfInDebug can true
+writeSuperR9Values can
+saveCalibValuesToFile dataHelios
+restart can
+waitSomeTime 3
+
+//start standard measurement
+checkIfAllIsGood
+setHeliosCurrent can red 1.4
+waitSomeTime 5
+readHeliosValues can dataHeliosRed14
+readCasValues cas dataCasMeasRed14
+saveSpectra2File dataCasMeasRed14 dataHelios Red14
+
+setHeliosCurrent can red 5.0
+waitSomeTime 5
+readHeliosValues can dataHeliosRed50
+readCasValues cas dataCasMeasRed50
+saveSpectra2File dataCasMeasRed50 dataHelios Red50
+setHeliosCurrent can red 0.0
+
+setHeliosCurrent can green 1.4
+waitSomeTime 5
+readHeliosValues can dataHeliosGre14
+readCasValues cas dataCasMeasGre14
+saveSpectra2File dataCasMeasGre14 dataHelios Gre14
+
+setHeliosCurrent can green 5.0
+waitSomeTime 5
+readHeliosValues can dataHeliosGre50
+readCasValues cas dataCasMeasGre50
+saveSpectra2File dataCasMeasGre50 dataHelios Gre50
+setHeliosCurrent can green 0.0
+
+setHeliosCurrent can blue 1.4
+waitSomeTime 5
+readHeliosValues can dataHeliosBlu14
+readCasValues cas dataCasMeasBlu14
+saveSpectra2File dataCasMeasBlu14 dataHelios Blu14
+
+setHeliosCurrent can blue 5.0
+waitSomeTime 5
+readHeliosValues can dataHeliosBlu50
+readCasValues cas dataCasMeasBlu50
+saveSpectra2File dataCasMeasBlu50 dataHelios Blu50
+setHeliosCurrent can blue 0.0
+
+checkRefMeasLimits
+
+setDebugStatus dio false
+waitSomeTime 1
+restart can
+waitSomeTime 3
+checkIfInDebug can false
+setHeliosIntensityRGB can 20
+setHeliosCCT can 5500
+waitSomeTime 2
+moveLightGuide out
+setHeliosIntensityRGB can 100
+waitSomeTime 360
+moveLightGuide in
+
+//second part of standardmeasurement
+
+readHeliosValues can dataHelios100CCT55
+readCasValues cas dataCasMeas100CCT55
+saveSpectra2File dataCasMeas100CCT55 dataHelios 100CCT55
+readPSValues ps dataPS100
+checkLimitsPS dataPS100
+
+setHeliosSuperR9 can on
+waitSomeTime 5
+readHeliosValues can dataHelios100SuperR9
+readCasValues cas dataCasMeas100SuperR9
+saveSpectra2File dataCasMeas100SuperR9 dataHelios 100SuperR9
+setHeliosSuperR9 can off
+
+setHeliosCCT can 3000
+waitSomeTime 5
+readHeliosValues can dataHelios100CCT30
+readCasValues cas dataCasMeas100CCT30
+saveSpectra2File dataCasMeas100CCT30 dataHelios 100CCT30
+
+setHeliosCCT can 6500
+waitSomeTime 5
+readHeliosValues can dataHelios100CCT65
+readCasValues cas dataCasMeas100CCT65
+saveSpectra2File dataCasMeas100CCT65 dataHelios 100CCT65
+
+setHeliosCCT can 6500
+setHeliosIntensityRGB can 20
+waitSomeTime 5
+readHeliosValues can dataHelios20CCT65
+readCasValues cas dataCasMeas20CCT65
+saveSpectra2File dataCasMeas20CCT65 dataHelios 020CCT65
+
+setHeliosCCT can 5500
+waitSomeTime 5
+readHeliosValues can dataHelios20CCT55
+readCasValues cas dataCasMeas20CCT55
+saveSpectra2File dataCasMeas20CCT55 dataHelios 020CCT55
+
+setHeliosCCT can 3000
+waitSomeTime 5
+readHeliosValues can dataHelios20CCT30
+readCasValues cas dataCasMeas20CCT30
+saveSpectra2File dataCasMeas20CCT30 dataHelios 020CCT30
+setHeliosIntensityRGB can 0
+
+setHeliosCCT can 5500
+setHeliosIntensityRGB can 5
+waitSomeTime 5
+readHeliosValues can dataHelios5CCT55
+readCasValues cas dataCasMeas5CCT55
+saveSpectra2File dataCasMeas5CCT55 dataHelios 005CCT55
+setHeliosIntensityRGB can 0
+
+setPSStatus ps 0.0 0.0
+waitSomeTime 5
+
+waitForOK 1
+
+waitSomeTime 2
+
+checkBoxClosed
+
+moveLightGuide in
+setPSStatus ps 24.0 10.0
+waitSomeTime 5
+
+setHeliosCCT can 5500
+setHeliosIntensityRGB can 100
+waitSomeTime 5
+readHeliosValues can dataHelios100CCT55low
+readCasValues cas dataCasMeas100CCT55low
+SaveSpectra2File dataCasMeas100CCT55low dataHelios 100CCT55low
+
+checkLimitsFinal
+
+setPSStatus ps 0.0 0.0
+moveLightGuide out
+
+saveFinalTestDataRGBToFile TestDataHelios.xlsx
+
+waitForOK 2

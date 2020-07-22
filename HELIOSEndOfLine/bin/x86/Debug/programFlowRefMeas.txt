@@ -1,0 +1,78 @@
+checkBoxClosed
+
+checkCommunicationCas cas
+checkCommunicationPS ps
+setPSStatus ps 0.0 0.0
+waitSomeTime 5
+
+setDebugStatus dio true
+moveLightGuide in
+setPSStatus ps 24.0 10.0
+waitSomeTime 7
+checkCommunicationHelios can
+checkIfInDebug can true
+readPSValues ps dataPSSby
+checkLimitsPS dataPSSby
+
+readSNandLifeTime can dataHelios
+compareSerialNumber dataHelios
+resetDailyCalib can
+waitSomeTime 2
+restart can 
+waitSomeTime 2
+
+setHeliosCurrent can red 1.4
+waitSomeTime 5
+readHeliosValues can dataHeliosRed14
+readCasValues cas dataCasMeasRed14
+saveSpectra2File dataCasMeasRed14 dataHelios Red14
+
+setHeliosCurrent can red 5.0
+waitSomeTime 5
+readHeliosValues can dataHeliosRed50
+readCasValues cas dataCasMeasRed50
+saveSpectra2File dataCasMeasRed50 dataHelios Red50
+setHeliosCurrent can red 0.0
+
+setHeliosCurrent can green 1.4
+waitSomeTime 5
+readHeliosValues can dataHeliosGre14
+readCasValues cas dataCasMeasGre14
+saveSpectra2File dataCasMeasGre14 dataHelios Gre14
+
+setHeliosCurrent can green 5.0
+waitSomeTime 5
+readHeliosValues can dataHeliosGre50
+readCasValues cas dataCasMeasGre50
+saveSpectra2File dataCasMeasGre50 dataHelios Gre50
+setHeliosCurrent can green 0.0
+
+setHeliosCurrent can blue 1.4
+waitSomeTime 5
+readHeliosValues can dataHeliosBlu14
+readCasValues cas dataCasMeasBlu14
+saveSpectra2File dataCasMeasBlu14 dataHelios Blu14
+
+setHeliosCurrent can blue 5.0
+waitSomeTime 5
+readHeliosValues can dataHeliosBlu50
+readCasValues cas dataCasMeasBlu50
+saveSpectra2File dataCasMeasBlu50 dataHelios Blu50
+setHeliosCurrent can blue 0.0
+
+checkRefMeasLimits
+
+setHeliosIntensityUVDebug can 100
+waitSomeTime 5
+readHeliosValues can dataHeliosUV
+readCasValues cas dataCasMeasUV
+saveSpectra2File dataCasMeasUV dataHelios 100UV
+setHeliosIntensityUVDebug can 0
+
+checkRefMeasLimitsV
+
+setPSStatus ps 0.0 0.0
+moveLightGuide out
+setDebugStatus dio false
+
+saveGoldenTestDataToFile TestDataGoldenHelios.xlsx

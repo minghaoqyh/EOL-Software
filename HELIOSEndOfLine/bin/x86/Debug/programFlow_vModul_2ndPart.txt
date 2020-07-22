@@ -1,0 +1,38 @@
+checkBoxClosed
+checkCommunicationCas cas
+checkCommunicationPS ps
+setPSStatus ps 0.0 0.0
+waitSomeTime 5
+
+setDebugStatus dio true
+moveLightGuide in
+setPSStatus ps 24.0 10.0
+waitSomeTime 7
+checkCommunicationHelios can
+checkIfInDebug can true
+readPSValues ps dataPSSbyV
+checkLimitsPS dataPSSbyV
+checkGeneralFunctionV can cas
+
+readSNandLifeTimeUV can dataHelios
+
+moveLightGuide out
+waitSomeTime 0.5
+setHeliosIntensityUVDebug can 100
+waitSomeTime 60
+moveLightGuide in
+readHeliosValues can dataHeliosUV
+readCasValues cas dataCasMeasUV
+saveSpectra2File dataCasMeasUV dataHelios 100UV
+readPSValues ps dataPSV
+checkLimitsPS dataPSV
+setHeliosIntensityUVDebug can 0
+
+checkRefMeasLimitsV
+
+setPSStatus ps 0.0 0.0
+moveLightGuide out
+
+saveUVValuesToFile VModuleTestData.xlsx
+
+waitForOK Ende
